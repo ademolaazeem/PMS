@@ -1,0 +1,204 @@
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="LeadtoPResultGoalSettings.ascx.cs" Inherits="Account_forms_LeadtoPResultGoalSettings" %>
+<%@ Register assembly="CrystalDecisions.Web, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304" namespace="CrystalDecisions.Web" tagprefix="CR" %>
+
+<style type="text/css">
+
+
+
+    .style21
+    {
+        width: 152px;
+    }
+        .style27
+    {
+        width: 288px;
+    }
+        .style6
+    {
+        width: 152px;
+        background-color: #CCCCFF;
+        text-align: right;
+    }
+        .style37
+    {
+        background-color: #CCCCFF;
+        width: 288px;
+    }
+        .style35
+    {
+        width: 152px;
+        background-color: #FFFFFF;
+        text-align: right;
+        height: 36px;
+    }
+    .style36
+    {
+        background-color: #FFFFFF;
+        width: 288px;
+        height: 36px;
+    }
+    .style32
+    {
+        background-color: #FFFFFF;
+        text-align: center;
+    }
+        .style38
+    {
+        width: 100%;
+    }
+    .style39
+    {
+        background-color: #CCCCFF;
+        width: 288px;
+        height: 36px;
+    }
+    .style40
+    {
+        width: 152px;
+        background-color: #CCCCFF;
+        text-align: right;
+        height: 36px;
+    }
+    .style41
+    {
+        background-color: #FFFFFF;
+        width: 288px;
+    }
+    .style42
+    {
+        width: 152px;
+        background-color: #FFFFFF;
+        text-align: right;
+    }
+        .Gridview
+        {
+        margin-right: 170px;
+    }
+        
+
+        .stylehr
+    {
+        color:White;
+    }
+        </style>
+
+<table style="width:94.8%;">
+    <tr>
+        <td align="right" bgcolor="Silver" class="style21">
+            &nbsp;</td>
+        <td bgcolor="Silver" class="style27">
+            <asp:Label ID="lblStatus" runat="server"></asp:Label>
+        </td>
+    </tr>
+    <tr>
+        <td bgcolor="#CCCCFF" colspan="2">
+            <asp:Label ID="Label12" runat="server" Font-Bold="True" ForeColor="Black" 
+                Text="Select Subordinate Information"></asp:Label>
+        </td>
+    </tr>
+    <tr>
+        <td class="style6">
+            &nbsp;</td>
+        <td class="style37">
+            &nbsp;</td>
+    </tr>
+    <tr>
+        <td class="style35">
+            Select Subordinate name:</td>
+        <td class="style36">
+            <asp:DropDownList ID="DDLSubName"  runat="server" Height="28px" 
+                Width="293px">
+            </asp:DropDownList>
+            </td>
+    </tr>
+    <tr>
+        <td class="style40">
+            &nbsp;</td>
+        <td class="style39">
+            &nbsp;</td>
+    </tr>
+    <tr>
+        <td class="style42">
+            &nbsp;</td>
+        <td class="style41">
+            <asp:Button ID="btnShowSubPRGoalSettings" runat="server" 
+                 Text="Show Subordinate PR Goal Settings" 
+                Height="31px" onclick="btnShowSubPRGoalSettings_Click" />
+            <asp:HyperLink ID="HLnkShowSubPRGoalSettings" runat="server" 
+                NavigateUrl="~/Account/forms/PResultGoalSettings.ascx" 
+                ondatabinding="btnShowSubPRGoalSettings_Click">Show Subordinate PR Goal Settings</asp:HyperLink>
+            </td>
+    </tr>
+    <tr>
+        <td class="style32" colspan="2">
+            <table class="style38">
+                <tr>
+                    <td>
+                <asp:GridView ID="GrdViewKPI" runat="server" AllowPaging="True" 
+                    AllowSorting="True" AutoGenerateColumns="False" BorderWidth="2px" 
+                    CellPadding="5" CssClass="Gridview" DataKeyNames="KPI_DIMENSION" 
+                    ForeColor="#333333" GridLines="Both" 
+                    OnPageIndexChanging="GrdViewKPI_PageIndexChanging" 
+                    OnRowDataBound="GrdViewKPI_RowDataBound" 
+                    onselectedindexchanged="GrdViewKPI_SelectedIndexChanged" 
+                    OnSorting="GrdViewKPI_Sorting" PageSize="6" ShowFooter="True" 
+                    Width="930px">
+                    <AlternatingRowStyle BackColor="White" />
+                    
+                    <Columns>
+                        <asp:BoundField DataField="APPRAISAL" HeaderText="" 
+                            SortExpression="APPRAISAL" />
+                       
+                        <asp:TemplateField FooterStyle-HorizontalAlign="Center" 
+                            HeaderText="Weight" ItemStyle-HorizontalAlign="Center">
+                            <ItemTemplate>
+                                <asp:Label ID="WEIGHT1" runat="server" 
+                                    Text='<%# Eval("WEIGHT")%>' />
+                            </ItemTemplate>
+                            <FooterTemplate>
+                                <br />
+                                <asp:Label ID="lblWeightedScore" runat="server" />
+                            </FooterTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField FooterStyle-HorizontalAlign="Center" 
+                            HeaderText="Score" ItemStyle-HorizontalAlign="Center">
+                            <ItemTemplate>
+                                <%--<asp:Label ID="TOTAL_OBTAINABLE_SCORE1" runat="server" Text='<%#Eval("TOTAL_OBTAINABLE_SCORE"%>' />--%>
+                                <%--<asp:label id="TOTAL_OBTAINABLE_SCORE1" Text= '<%# Eval("TOTAL_OBTAINABLE_SCORE") %>' runat="server"/> .ToString()+"%"--%>
+                                <asp:Label ID="SCORE1" runat="server" 
+                                    Text='<%# Eval("SCORE")%>' />
+                            </ItemTemplate>
+                            <FooterTemplate>
+                                <asp:Label ID="lbl100percent" runat="server" />
+                                <br />
+                                <hr class="stylehr" />
+                                <asp:Label ID="lbl70percent" runat="server" />
+                            </FooterTemplate>
+                        </asp:TemplateField>
+                        
+                        <%-- 
+                            <asp:BoundField DataField="INDIVIDUAL_PERFORMANCE_SCORE" HeaderText="Individual Performance Score" SortExpression="INDIVIDUAL_PERFORMANCE_SCORE" DataFormatString="{0:P}" />
+                             DataFormatString="{0:C}"--%>
+                        
+                    </Columns>
+                    <%--<EditRowStyle BackColor="#2461BF" />--%>
+                    <FooterStyle BackColor="#507CD1" Font-Bold="True" ForeColor="White" />
+                    <HeaderStyle BackColor="#507CD1" Font-Bold="True" ForeColor="White" />
+                    <PagerStyle BackColor="#2461BF" ForeColor="White" HorizontalAlign="Center" />
+                    <RowStyle BackColor="#EFF3FB" />
+                    <SelectedRowStyle BackColor="#D1DDF1" Font-Bold="True" ForeColor="#333333" />
+                    <SortedAscendingCellStyle BackColor="#F5F7FB" />
+                    <SortedAscendingHeaderStyle BackColor="#6D95E1" />
+                    <SortedDescendingCellStyle BackColor="#E9EBEF" />
+                    <SortedDescendingHeaderStyle BackColor="#4870BE" />
+                </asp:GridView>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    </table>
+
+
+        
+

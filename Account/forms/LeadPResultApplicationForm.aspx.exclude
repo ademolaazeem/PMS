@@ -1,0 +1,204 @@
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="LeadPResultApplicationForm.aspx.cs" Inherits="Account_forms_LeadPResultApplicationForm" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title></title>
+    <style type="text/css">
+
+
+
+
+    .style21
+    {
+        width: 152px;
+    }
+        .style27
+    {
+        width: 288px;
+    }
+        .style6
+    {
+        width: 152px;
+        background-color: #CCCCFF;
+        text-align: right;
+    }
+        .style37
+    {
+        background-color: #CCCCFF;
+        width: 288px;
+    }
+        .style35
+    {
+        width: 152px;
+        background-color: #FFFFFF;
+        text-align: right;
+        height: 36px;
+    }
+    .style36
+    {
+        background-color: #FFFFFF;
+        width: 288px;
+        height: 36px;
+    }
+    .style40
+    {
+        width: 152px;
+        background-color: #CCCCFF;
+        text-align: right;
+        height: 36px;
+    }
+    .style39
+    {
+        background-color: #CCCCFF;
+        width: 288px;
+        height: 36px;
+    }
+    .style42
+    {
+        width: 152px;
+        background-color: #FFFFFF;
+        text-align: right;
+    }
+    .style41
+    {
+        background-color: #FFFFFF;
+        width: 288px;
+    }
+    .style32
+    {
+        background-color: #FFFFFF;
+        text-align: center;
+    }
+        .style38
+    {
+        width: 100%;
+    }
+        .style151
+        {
+            width: 145px;
+            background-color: #999999;
+        }
+            .style127
+            {
+                background-color: #FFFFFF;
+                color: #FFFFFF;
+                }
+            .style130
+            {
+                background-color: #666666;
+                color: #FFFFFF;
+                width: 108px;
+            }
+            .style128
+            {
+                background-color: #999999;
+                color: #FFFFFF;
+                height: 34px;
+                text-align: left;
+                width: 145px;
+            }
+            .style129
+            {
+                height: 34px;
+                width: 122px;
+            }
+            .style131
+            {
+                height: 34px;
+                width: 108px;
+            }
+            .style148
+            {
+                background-color: #999999;
+                color: #FFFFFF;
+                height: 8px;
+                text-align: left;
+                width: 145px;
+            }
+            .style149
+            {
+                height: 8px;
+                width: 122px;
+            }
+            .style150
+            {
+                height: 8px;
+                width: 108px;
+            }
+            .style125
+            {
+                background-color: #CCCCCC;
+                width: 122px;
+            }
+            .style133
+            {
+                background-color: #FF0000;
+                width: 108px;
+            }
+            </style>
+</head>
+<body>
+    <form id="form1" runat="server">
+
+<table style="width:94.8%;">
+    <tr>
+        <td align="right" bgcolor="Silver" class="style21">
+            &nbsp;</td>
+        <td bgcolor="Silver" class="style27">
+            <asp:Label ID="lblStatus" runat="server"></asp:Label>
+        </td>
+    </tr>
+    <tr>
+        <td bgcolor="#CCCCFF" colspan="2">
+            <asp:Label ID="Label12" runat="server" Font-Bold="True" ForeColor="Black" 
+                Text="Create Departments"></asp:Label>
+        </td>
+    </tr>
+    <tr>
+        <td class="style6">
+            &nbsp;</td>
+        <td class="style37">
+            &nbsp;</td>
+    </tr>
+    <tr>
+        <td class="style35">
+            Select Subordinate name:</td>
+        <td class="style36">
+            <asp:DropDownList ID="DDLSubName"  runat="server" Height="28px" 
+                Width="293px">
+            </asp:DropDownList>
+            </td>
+    </tr>
+    <tr>
+        <td class="style40">
+            &nbsp;</td>
+        <td class="style39">
+            &nbsp;</td>
+    </tr>
+    <tr>
+        <td class="style42">
+            &nbsp;</td>
+        <td class="style41">
+            <asp:Button ID="btnShowSubPRGoalSettings" runat="server" 
+                 Text="Show Subordinate PR Goal Settings" 
+                Height="31px" onclick="btnShowSubPRGoalSettings_Click" />
+            <asp:HyperLink ID="HLnkShowSubPRGoalSettings" runat="server" 
+                NavigateUrl="~/Account/forms/PResultGoalSettings.ascx" 
+                ondatabinding="btnShowSubPRGoalSettings_Click">Show Subordinate PR Goal Settings</asp:HyperLink>
+            </td>
+    </tr>
+    <tr>
+        <td class="style32" colspan="2">
+            <table class="style38">
+                <tr>
+                    <td>
+                        &nbsp;</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    </table></form>
+</body>
+</html>

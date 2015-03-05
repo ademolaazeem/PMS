@@ -1,0 +1,253 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+//using System.Security.Principal.IPrincipal;
+//using System.Web
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.Profile;
+//System.Web.Profile
+using System.Web.Security;
+//
+using Oracle.DataAccess.Client;
+using Oracle.DataAccess.Types;
+using System.Data;
+//
+using System.Web.Services;
+using System.Web.Services.Protocols;
+using System.Configuration;
+//using DAL.Dalcs;
+
+
+namespace DAL
+{
+
+    /// <summary>
+    /// Summary description for get_list_Dal
+    /// </summary>
+    public class get_list_Dal
+    {
+        //public get_list_Dal()
+        //{
+        //    //
+        //    // TODO: Add constructor logic here
+        //    //
+        //}
+        public static DataTable GetInstitutionList()
+        {
+            using (OracleConnection con = new OracleConnection())
+            {
+                con.ConnectionString = Dalcs.PMSConnectionString;
+                con.Open();
+
+                string sql = "select distinct a.institutncode,a.instituitionname from tinstitutiondetails a, trawdatabin b where a.instituitionname = b.bankfullname order by a.instituitionname asc";
+
+                OracleCommand cmd = new OracleCommand(sql, con);
+                cmd.CommandType = CommandType.Text;
+                cmd.CommandText = sql;
+
+                // cmd.Parameters.AddWithValue(":BANKFIID", bankFIID);
+                //cmd.Parameters.Add(":TERMCLASS", deviceType);
+                OracleDataAdapter adapter = new OracleDataAdapter(cmd);
+
+                DataTable table = new DataTable();
+                adapter.Fill(table);
+
+                return table;
+            }
+        }
+        public static DataTable GetInstitutionList_NG()
+        {
+            using (OracleConnection con = new OracleConnection())
+            {
+                con.ConnectionString = Dalcs.PMSConnectionString;
+                con.Open();
+
+                string sql = "select bankfiid,instituitionname from tinstitutiondetails where country='NG' and bankfiid is not null";
+
+                OracleCommand cmd = new OracleCommand(sql, con);
+                cmd.CommandType = CommandType.Text;
+                cmd.CommandText = sql;
+
+                // cmd.Parameters.AddWithValue(":BANKFIID", bankFIID);
+                //cmd.Parameters.Add(":TERMCLASS", deviceType);
+                OracleDataAdapter adapter = new OracleDataAdapter(cmd);
+
+                DataTable table = new DataTable();
+                adapter.Fill(table);
+
+                return table;
+            }
+        }
+
+
+
+
+        ////////////////////////////////////////////////
+
+        protected void btnSearch_Click(object sender, EventArgs e)
+    {
+        if (txtuser.Text == string.Empty)
+        {
+            lblstatus.Text = "Username Required";
+            lblstatus.ForeColor = System.Drawing.Color.Red;
+            return;
+        }
+        //
+        string fname;
+        string email;
+        string branch;
+        string accNo;
+        string users;
+        //
+        try
+        {
+            //codes here
+            string rst = crudsbLL.get_user_content(txtuser.Text.Trim());
+            if (rst != string.Empty)
+            {
+                lblstatus.Text = "User record found";// +rst.ToString();
+                lblstatus.ForeColor = System.Drawing.Color.Blue;
+                //
+                authPanel.Visible = true;
+                
+                //S[LIT CONTENT
+                string[] sepsess = rst.Split('_');
+                //
+                 fname = sepsess[0];
+                 email = sepsess[1];
+                 branch = sepsess[2];
+                 accNo = sepsess[3];
+                 users = sepsess[4];
+                //display user record
+                lblfname.Text = fname;
+                lblemail.Text = email;
+                lblbranch.Text = branch;
+                lblaccNo.Text = accNo;
+                lblUserName.Text = users;
+                //
+                //
+                string rstPerm = crudsbLL.get_user_permissions(txtuser.Text);
+                //
+                string[] Perm = rstPerm.Split('_');
+                //
+                //
+                if (Perm[1] == "1")
+                    chkAccess_UserCreat.Checked = true;
+                //
+                if (Perm[2] == "1")
+                    chkAccess_DataAuth.Checked = true;
+                //
+                if (Perm[3] == "1")
+                    chkAccess_UserAuth.Checked = true;
+                //
+                if (Perm[4] == "1")
+                    chkAccess_PayCol.Checked = true;
+                //
+
+                if (Perm[5] == "1")
+                    chkAccess_RptRisk.Checked = true;
+                //
+
+                //
+                txtuser.ReadOnly = true;
+                //
+                //
+                //
+               // ClearTextBoxes(this);
+            }
+            else
+            {
+                //lblstatus.Text = "Error: Operation failed " + chkCustId.ToString();// +rst.ToString();
+                lblstatus.Text = "User record not found";// +rst.ToString();
+                lblstatus.ForeColor = System.Drawing.Color.Red;
+                //
+                txtuser.ReadOnly = false;
+                //
+                return;
+
+            }
+        }
+        catch (Exception ex)
+        {
+            lblstatus.Text = "Object Error: " + ex.Message;
+            lblstatus.ForeColor = System.Drawing.Color.Red;
+            return;
+        }
+    }
+----------------------------------------------------------------------------------------------------------------
+ public static string get_user_content(string username)
+        {
+            return cruds.get_user_content( username);
+        }
+
+
+--------------------------------------------------------------------------------------
+
+ public static string get_user_content(string username)
+        {
+            // int value;
+            //  int created = 0;
+            string userBranch =get_user_branchid(username);
+
+            string content = "";
+            try
+            {
+                //using (OracleConnection con = new OracleConnection())
+                //{
+
+                OracleConnection conn = new OracleConnection();
+                conn.ConnectionString =Dalcs.MisportalConnection;
+
+                //OracleCommand cmd = new OracleCommand();
+
+                //c//md.Connection = conn;
+
+                // con.ConnectionString = Dalcs.MisportalConnection;
+                if (conn.State == ConnectionState.Closed)
+                    conn.Open();//re open if connection closed
+                //
+
+                string sql = " select account_teller,fullname,email,branch_name,a.username,branch_tillacc from paycol_users a, paycol_perm b, paycol_bank_branch c where a.username = b.username and a.branchcode = c.branchid and trim(b.username)= '" + username.Trim() + "'";
+                //
+                OracleCommand cmd = new OracleCommand(sql, conn);
+                cmd.CommandType = CommandType.Text;
+                //
+
+
+                //cmd.Parameters.Add("p_bankname", OracleDbType.Varchar2, 100).Value = username;
+               // cmd.Parameters.Add("p_bankname", OracleDbType.Varchar2, 100).Value = bankname;
+                
+
+                //
+                OracleDataReader reader;
+                reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    //get alert_content
+                    content = reader["fullname"].ToString() + "_" + reader["email"].ToString() + "_" + reader["branch_name"].ToString() + "_" + reader["branch_tillacc"].ToString() + "_" + reader["username"].ToString();
+                    //
+
+                }//end of while
+                reader.Close();
+                //
+                conn.Close();
+                //
+                return content;
+                //}
+            }
+            catch (Exception ex)
+            {
+                //return 2;
+                return ex.Message;
+            }
+        }
+
+
+
+
+        ///////////////////////////////////////////////
+    }
+}

@@ -1,0 +1,497 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using BLL;
+using System.Data;
+
+public partial class Account_forms_BC_GoalSettings : System.Web.UI.Page
+{
+    decimal grdTotal = 0;
+    protected void Page_Load(object sender, EventArgs e)
+    {
+
+        for (int i = 2013; i <= 2020; i++)
+        {
+            ddlYear.Items.Add(i.ToString());
+        }
+        ddlYear.Items.FindByValue(System.DateTime.Now.Year.ToString()).Selected = true;  //set current year as selected
+
+        for (int i = 1; i <= 12; i++)
+        {
+
+
+            ddlMonth.Items.Add(i.ToString());
+
+
+        }
+        ddlMonth.Items.FindByValue(System.DateTime.Now.Month.ToString()).Selected = true; // Set current month as selected
+        //}
+
+
+
+        String username = Session["usr"].ToString();
+        int retLog = crudsbLL.saveAuditLog(username, Request.UserHostAddress, "Goal Settings: User " + username + " successfully views behavioural competencies page for Goal Settings Interface");
+
+        if (Session["empNoSession"] != "")
+        {
+
+
+            string empName;
+            string empGradeLevel;
+            string empDept;
+            string empNoSess = Session["empNoSession"].ToString();
+
+
+            try
+            {
+                //codes here
+                string rst = crudsbLL.getPhaseOneContent(empNoSess.Trim().ToLower());
+
+                if (rst != string.Empty)
+                {
+                    lblStatus.Text = "Employee record found";// +rst.ToString();
+                    lblStatus.ForeColor = System.Drawing.Color.Blue;
+                    string[] sepsess = rst.Split('_');
+                    empName = sepsess[0];
+                    empDept = sepsess[1];
+                    empGradeLevel = sepsess[2];
+                    LblName.Text = empName;
+                    LblGroupDepartment.Text = empDept;
+                    LblGradeLevel.Text = empGradeLevel;
+
+                }
+                else
+                {
+
+                    lblStatus.Text = "User record not found";// +rst.ToString();
+                    lblStatus.ForeColor = System.Drawing.Color.Red;
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+                lblStatus.Text = "Object Error: " + ex.Message;
+                lblStatus.ForeColor = System.Drawing.Color.Red;
+                //return;
+            }
+
+            /////////////////////////////////////////////////
+
+            sessionDimension(empNoSess);
+
+            ///////////////////////////////////////////////
+
+
+
+
+        }//end if session
+        else if (Session["empNoSession"] == "")
+        {
+            string empName;
+            string empGradeLevel;
+            string empDept;
+
+
+            //String username = Session["usr"].ToString();
+            // string empNoSess = Session["empNoSession"].ToString();
+
+
+            try
+            {
+                //codes here
+                string rst = crudsbLL.getPhaseOneContent(username.Trim().ToLower());
+
+                if (rst != string.Empty)
+                {
+                    lblStatus.Text = "Employee record found";// +rst.ToString();
+                    lblStatus.ForeColor = System.Drawing.Color.Blue;
+                    //
+                    //authPanel.Visible = true;
+
+                    //S[LIT CONTENT
+                    string[] sepsess = rst.Split('_');
+                    //ontent = reader["id"].ToString() + "_" + reader["name"].ToString() +"_" + reader["GROUPNAME"].ToString() + "_" + reader["creator"].ToString() + "_" + reader["created_date"].ToString();
+                    empName = sepsess[0];
+                    empDept = sepsess[1];
+                    empGradeLevel = sepsess[2];
+                    LblEmpNo.Text = sepsess[3];
+                    LblPositionId.Text = sepsess[4];
+
+                    LblName.Text = empName;
+                    LblGroupDepartment.Text = empDept;
+                    LblGradeLevel.Text = empGradeLevel;
+
+                }
+                else
+                {
+
+                    lblStatus.Text = "Employee record not found";// +rst.ToString();
+                    lblStatus.ForeColor = System.Drawing.Color.Red;
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+                lblStatus.Text = "Object Error: " + ex.Message;
+                lblStatus.ForeColor = System.Drawing.Color.Red;
+                //return;
+            }
+
+
+            sessionDimension(username);
+
+        }//end else if
+
+    }//_Load
+
+    private void sessionDimension(string sessionDep)
+    {
+        /////////////////////////////////////////////////
+        DataTable tablePhaseTwo = crudsbLL.getBCPhaseTwoList(sessionDep);
+        GrdViewKPI.DataSource = tablePhaseTwo;
+        GrdViewKPI.DataBind();
+
+
+
+
+        DataTable tableProf = crudsbLL.getProfList();
+        //if (tableProf.Rows.Count > 0)
+        //{
+            GrdViewProfessionalism.DataSource = tableProf;
+            GrdViewProfessionalism.DataBind();
+         //}
+            DataTable tableComm = crudsbLL.getCommList();
+            GrdViewCommunication.DataSource = tableComm;
+            GrdViewCommunication.DataBind();
+            
+            DataTable tableTeam = crudsbLL.getProfList();
+            GrdViewTeamwork.DataSource = tableTeam;
+            GrdViewTeamwork.DataBind();
+            
+            DataTable tableCust = crudsbLL.getCustList();
+            GrdViewCustomerCentricity.DataSource = tableCust;
+            GrdViewCustomerCentricity.DataBind();
+
+            DataTable tableInno = crudsbLL.getInnoList();
+            GrdViewInnovation.DataSource = tableInno;
+            GrdViewInnovation.DataBind();
+
+            DataTable tableLead = crudsbLL.getLeadList();
+            GrdViewLeadership.DataSource = tableLead;
+            GrdViewLeadership.DataBind();
+
+            DataTable tablePEffectAcct = crudsbLL.getPEffectAcctList();
+            GrdViewPersEffectAccount.DataSource = tablePEffectAcct;
+            GrdViewPersEffectAccount.DataBind();
+
+
+        ///////////////////////////////////////////////
+
+    }
+    private string ConvertSortDirectionToSql(SortDirection sortDirection)
+    {
+        string newSortDirection = String.Empty;
+
+        switch (sortDirection)
+        {
+            case SortDirection.Ascending:
+                newSortDirection = "ASC";
+                break;
+
+            case SortDirection.Descending:
+                newSortDirection = "DESC";
+                break;
+        }
+
+        return newSortDirection;
+    }
+    protected void GrdViewKPI_PageIndexChanging(object sender, GridViewPageEventArgs e)
+    {
+        GrdViewKPI.PageIndex = e.NewPageIndex;
+        GrdViewKPI.DataBind();
+    }//end _PageIndexChanging
+    protected void GrdViewKPI_Sorting(object sender, GridViewSortEventArgs e)
+    {
+        DataTable dataTable = GrdViewKPI.DataSource as DataTable;
+
+        if (dataTable != null)
+        {
+            DataView dataView = new DataView(dataTable);
+            dataView.Sort = e.SortExpression + " " + ConvertSortDirectionToSql(e.SortDirection);
+
+            GrdViewKPI.DataSource = dataView;
+            GrdViewKPI.DataBind();
+        }
+
+}//end _Sorting
+    protected void GrdViewKPI_RowCommand(object sender, GridViewCommandEventArgs e)
+    {
+        if (e.CommandName == "Select")
+        {
+
+            GridViewRow gvr = (GridViewRow)(((LinkButton)e.CommandSource).NamingContainer);
+
+            int RowIndex = gvr.RowIndex;
+
+        }
+    }//_RowCommand
+    protected void GrdViewKPI_RowDataBound(Object sender, GridViewRowEventArgs e)
+    {
+        if (e.Row.RowType == DataControlRowType.DataRow)
+        {
+
+            decimal rowTotal = Convert.ToDecimal
+            (DataBinder.Eval(e.Row.DataItem, "WEIGHT"));
+            grdTotal = grdTotal + rowTotal;
+        }
+        if (e.Row.RowType == DataControlRowType.Footer)
+        {
+            Label lbl = (Label)e.Row.FindControl("lblTotalWeight");
+            decimal tot = grdTotal / 100;
+            lbl.Text = tot.ToString("P");
+        }
+    }//GrdViewKPI_RowDataBound
+
+    protected void GrdViewProfessionalism_PageIndexChanging(object sender, GridViewPageEventArgs e)
+    {
+        GrdViewProfessionalism.PageIndex = e.NewPageIndex;
+        GrdViewProfessionalism.DataBind();
+    }//end _PageIndexChanging
+    protected void GrdViewProfessionalism_Sorting(object sender, GridViewSortEventArgs e)
+    {
+        DataTable dataTable = GrdViewProfessionalism.DataSource as DataTable;
+
+        if (dataTable != null)
+        {
+            DataView dataView = new DataView(dataTable);
+            dataView.Sort = e.SortExpression + " " + ConvertSortDirectionToSql(e.SortDirection);
+
+            GrdViewProfessionalism.DataSource = dataView;
+            GrdViewProfessionalism.DataBind();
+        }
+
+
+
+
+
+    }//end _Sorting
+    protected void GrdViewProfessionalism_RowCommand(object sender, GridViewCommandEventArgs e)
+    {
+        if (e.CommandName == "Select")
+        {
+
+            GridViewRow gvr = (GridViewRow)(((LinkButton)e.CommandSource).NamingContainer);
+
+            int RowIndex = gvr.RowIndex;
+
+        }
+    }//_RowCommand
+
+
+
+    protected void GrdViewCommunication_PageIndexChanging(object sender, GridViewPageEventArgs e)
+    {
+        GrdViewCommunication.PageIndex = e.NewPageIndex;
+        GrdViewCommunication.DataBind();
+    }//end _PageIndexChanging
+    protected void GrdViewCommunication_RowCommand(object sender, GridViewCommandEventArgs e)
+    {
+        if (e.CommandName == "Select")
+        {
+
+            GridViewRow gvr = (GridViewRow)(((LinkButton)e.CommandSource).NamingContainer);
+
+            int RowIndex = gvr.RowIndex;
+
+        }
+    }//_RowCommand
+    protected void GrdViewCommunication_Sorting(object sender, GridViewSortEventArgs e)
+    {
+        DataTable dataTable = GrdViewCommunication.DataSource as DataTable;
+
+        if (dataTable != null)
+        {
+            DataView dataView = new DataView(dataTable);
+            dataView.Sort = e.SortExpression + " " + ConvertSortDirectionToSql(e.SortDirection);
+
+            GrdViewCommunication.DataSource = dataView;
+            GrdViewCommunication.DataBind();
+        }
+
+    }//end _Sorting
+
+    protected void GrdViewTeamwork_PageIndexChanging(object sender, GridViewPageEventArgs e)
+    {
+        GrdViewTeamwork.PageIndex = e.NewPageIndex;
+        GrdViewTeamwork.DataBind();
+    }//end _PageIndexChanging
+    protected void GrdViewTeamwork_RowCommand(object sender, GridViewCommandEventArgs e)
+    {
+        if (e.CommandName == "Select")
+        {
+
+            GridViewRow gvr = (GridViewRow)(((LinkButton)e.CommandSource).NamingContainer);
+
+            int RowIndex = gvr.RowIndex;
+
+        }
+    }//_RowCommand
+    protected void GrdViewTeamwork_Sorting(object sender, GridViewSortEventArgs e)
+    {
+        DataTable dataTable = GrdViewTeamwork.DataSource as DataTable;
+
+        if (dataTable != null)
+        {
+            DataView dataView = new DataView(dataTable);
+            dataView.Sort = e.SortExpression + " " + ConvertSortDirectionToSql(e.SortDirection);
+
+            GrdViewTeamwork.DataSource = dataView;
+            GrdViewTeamwork.DataBind();
+        }
+
+    }//end _Sorting
+
+    protected void GrdViewCustomerCentricity_PageIndexChanging(object sender, GridViewPageEventArgs e)
+    {
+        GrdViewCustomerCentricity.PageIndex = e.NewPageIndex;
+        GrdViewCustomerCentricity.DataBind();
+    }//end _PageIndexChanging
+    protected void GrdViewCustomerCentricity_RowCommand(object sender, GridViewCommandEventArgs e)
+    {
+        if (e.CommandName == "Select")
+        {
+
+            GridViewRow gvr = (GridViewRow)(((LinkButton)e.CommandSource).NamingContainer);
+
+            int RowIndex = gvr.RowIndex;
+
+        }
+    }//_RowCommand
+    protected void GrdViewCustomerCentricity_Sorting(object sender, GridViewSortEventArgs e)
+    {
+        DataTable dataTable = GrdViewCustomerCentricity.DataSource as DataTable;
+
+        if (dataTable != null)
+        {
+            DataView dataView = new DataView(dataTable);
+            dataView.Sort = e.SortExpression + " " + ConvertSortDirectionToSql(e.SortDirection);
+
+            GrdViewCustomerCentricity.DataSource = dataView;
+            GrdViewCustomerCentricity.DataBind();
+        }
+
+    }//end _Sorting
+
+    protected void GrdViewInnovation_PageIndexChanging(object sender, GridViewPageEventArgs e)
+    {
+        GrdViewCustomerCentricity.PageIndex = e.NewPageIndex;
+        GrdViewCustomerCentricity.DataBind();
+    }//end _PageIndexChanging
+    protected void GrdViewInnovation_RowCommand(object sender, GridViewCommandEventArgs e)
+    {
+        if (e.CommandName == "Select")
+        {
+
+            GridViewRow gvr = (GridViewRow)(((LinkButton)e.CommandSource).NamingContainer);
+
+            int RowIndex = gvr.RowIndex;
+
+        }
+    }//_RowCommand
+    protected void GrdViewInnovation_Sorting(object sender, GridViewSortEventArgs e)
+    {
+        DataTable dataTable = GrdViewInnovation.DataSource as DataTable;
+
+        if (dataTable != null)
+        {
+            DataView dataView = new DataView(dataTable);
+            dataView.Sort = e.SortExpression + " " + ConvertSortDirectionToSql(e.SortDirection);
+
+            GrdViewInnovation.DataSource = dataView;
+            GrdViewInnovation.DataBind();
+        }
+
+    }//end _Sorting
+
+    protected void GrdViewLeadership_PageIndexChanging(object sender, GridViewPageEventArgs e)
+    {
+        GrdViewLeadership.PageIndex = e.NewPageIndex;
+        GrdViewLeadership.DataBind();
+    }//end _PageIndexChanging
+    protected void GrdViewLeadership_RowCommand(object sender, GridViewCommandEventArgs e)
+    {
+        if (e.CommandName == "Select")
+        {
+
+            GridViewRow gvr = (GridViewRow)(((LinkButton)e.CommandSource).NamingContainer);
+
+            int RowIndex = gvr.RowIndex;
+
+        }
+    }//_RowCommand
+    protected void GrdViewLeadership_Sorting(object sender, GridViewSortEventArgs e)
+    {
+        DataTable dataTable = GrdViewLeadership.DataSource as DataTable;
+
+        if (dataTable != null)
+        {
+            DataView dataView = new DataView(dataTable);
+            dataView.Sort = e.SortExpression + " " + ConvertSortDirectionToSql(e.SortDirection);
+
+            GrdViewLeadership.DataSource = dataView;
+            GrdViewLeadership.DataBind();
+        }
+
+    }//end _Sorting
+
+    protected void GrdViewPersEffectAccount_PageIndexChanging(object sender, GridViewPageEventArgs e)
+    {
+        GrdViewPersEffectAccount.PageIndex = e.NewPageIndex;
+        GrdViewPersEffectAccount.DataBind();
+    }//end _PageIndexChanging
+    protected void GrdViewPersEffectAccount_RowCommand(object sender, GridViewCommandEventArgs e)
+    {
+        if (e.CommandName == "Select")
+        {
+
+            GridViewRow gvr = (GridViewRow)(((LinkButton)e.CommandSource).NamingContainer);
+
+            int RowIndex = gvr.RowIndex;
+
+        }
+    }//_RowCommand
+    protected void GrdViewPersEffectAccount_Sorting(object sender, GridViewSortEventArgs e)
+    {
+        DataTable dataTable = GrdViewPersEffectAccount.DataSource as DataTable;
+
+        if (dataTable != null)
+        {
+            DataView dataView = new DataView(dataTable);
+            dataView.Sort = e.SortExpression + " " + ConvertSortDirectionToSql(e.SortDirection);
+
+            GrdViewPersEffectAccount.DataSource = dataView;
+            GrdViewPersEffectAccount.DataBind();
+        }
+
+    }//end _Sorting
+
+    protected void btnSaveBCGS_Click(object sender, EventArgs e)
+    {
+
+    }
+    protected void LnkJobHolderDate_Click(object sender, EventArgs e)
+    {
+        CldJobHolderDate.Visible = true;
+    }
+    protected void CldJobHolderDate_SelectionChanged(object sender, EventArgs e)
+    {
+        //TxtJobHolderDate.Text = CldJobHolderDate.SelectedDate.ToLongDateString();
+        TxtJobHolderDate.Text = CldJobHolderDate.SelectedDate.ToShortDateString();
+        CldJobHolderDate.Visible = false;
+    }
+}

@@ -1,0 +1,28 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+/// <summary>
+/// Summary description for CLogin
+/// </summary>
+public class CLogin
+{
+     [Serializable]
+
+    public CLogin()
+	{
+		//
+		// TODO: Add constructor logic here
+		//
+        USERNAME = "";
+        LAST_LOGIN = "";
+        LOGIN_IP = "";
+        STATUS = "";
+	}
+     public string USERNAME;
+     public string LAST_LOGIN;
+     public string LOGIN_IP;
+     public string STATUS;
+
+}
